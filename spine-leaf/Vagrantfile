@@ -151,7 +151,7 @@ Vagrant.configure("2") do |config|
     device.vm.box = "CumulusCommunity/cumulus-vx"
 
     device.vm.provider :libvirt do |v|
-      v.memory = 768
+      v.memory = 2048
 
     end
     #   see note here: https://github.com/pradels/vagrant-libvirt#synced-folders
@@ -241,7 +241,7 @@ end
     device.vm.box = "CumulusCommunity/cumulus-vx"
 
     device.vm.provider :libvirt do |v|
-      v.memory = 768
+      v.memory = 2048
 
     end
     #   see note here: https://github.com/pradels/vagrant-libvirt#synced-folders
@@ -375,7 +375,7 @@ end
     device.vm.box = "CumulusCommunity/cumulus-vx"
 
     device.vm.provider :libvirt do |v|
-      v.memory = 768
+      v.memory = 2048
 
     end
     #   see note here: https://github.com/pradels/vagrant-libvirt#synced-folders
@@ -506,7 +506,9 @@ end
     
     device.vm.hostname = "central" 
     
-    device.vm.box = "generic/ubuntu1804"
+    #device.vm.box = "generic/ubuntu1804"
+    #device.vm.box = "generic/centos7"
+    device.vm.box = "generic/centos8"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
@@ -565,7 +567,8 @@ end
     
     device.vm.hostname = "worker1" 
     
-    device.vm.box = "generic/ubuntu1804"
+    #device.vm.box = "generic/ubuntu1804"
+    device.vm.box = "generic/centos8"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
@@ -656,7 +659,8 @@ end
     
     device.vm.hostname = "worker2" 
     
-    device.vm.box = "generic/ubuntu1804"
+    #device.vm.box = "generic/ubuntu1804"
+    device.vm.box = "generic/centos8"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
