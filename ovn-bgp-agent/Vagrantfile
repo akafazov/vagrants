@@ -1,0 +1,29 @@
+Vagrant.configure("2") do |config|
+
+  # VM1 configuration
+  config.vm.define "vm1" do |vm1|
+    vm1.vm.box = "generic/ubuntu2204"
+    vm1.vm.provider "libvirt" do |v|
+      v.memory = "4096"
+      v.cpus = 4
+    end
+    vm1.vm.network "private_network", ip: "192.168.50.101" # Assign an IP for VM1
+    vm1.vm.provision "shell", privileged: false, reset: true do |a|
+      a.path = 'devstack-bgp.sh'
+    end
+  end
+
+  # VM2 configuration
+  config.vm.define "vm2" do |vm2|
+    vm2.vm.box = "generic/ubuntu2204"
+    vm2.vm.provider "libvirt" do |v|
+      v.memory = "4096"
+      v.cpus = 4
+    end
+    vm2.vm.network "private_network", ip: "192.168.50.102" # Assign an IP for VM2
+    vm2.vm.provision "shell", privileged: false, reset: true do |a|
+      a.path = 'devstack-bgp.sh'
+    end
+  end
+
+end
