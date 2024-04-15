@@ -6,6 +6,8 @@ function centos_setup {
     sudo yum install net-tools tcpdump -y
     sudo yum install epel-release -y
     sudo yum install python3-devel python-six openssl-devel python36-six -y
+    sudo make altinstall
+    sudo yum install openssl-devel -y
     sudo yum install kernel-devel
     sudo yum install bmon -y
 }

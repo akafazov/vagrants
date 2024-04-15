@@ -1,5 +1,6 @@
-### Changes
+# Changes
 
+## Network
 - install vagrant scp plugin
 ```bash
 vagrant plugin install vagrant-scp
@@ -55,6 +56,9 @@ do
 done
 
 ```
+
+## Hosts
+
 - fix apt repositories (on Hosts)
 
 ```bash
@@ -155,6 +159,11 @@ done
 ```bash
 vagrant ssh rack-1-host-1 -c "sed -i 's|ip=${!hostname}|ip=99.99.1.1|g' /vagrant/utils/common-functions"
 ```
+
+Devstack requires python3.7 but CentOS comes with python3.6
+
+
+
 <!-- 
 - DevStack installation on controller
 ```bash
