@@ -143,6 +143,7 @@ Vagrant.configure("2") do |config|
     device.vm.hostname = "spine-1" 
     
     device.vm.box = "CumulusCommunity/cumulus-vx"
+    device.vm.box_version = "4.4"
 
     device.vm.provider :libvirt do |v|
       v.memory = 768
@@ -263,6 +264,7 @@ end
     device.vm.hostname = "spine-2" 
     
     device.vm.box = "CumulusCommunity/cumulus-vx"
+    device.vm.box_version = "4.4"
 
     device.vm.provider :libvirt do |v|
       v.memory = 768
@@ -383,6 +385,7 @@ end
     device.vm.hostname = "rack-1-leaf-1" 
     
     device.vm.box = "CumulusCommunity/cumulus-vx"
+    device.vm.box_version = "4.4"
 
     device.vm.provider :libvirt do |v|
       v.memory = 768
@@ -503,6 +506,7 @@ end
     device.vm.hostname = "rack-1-leaf-2" 
     
     device.vm.box = "CumulusCommunity/cumulus-vx"
+    device.vm.box_version = "4.4"
 
     device.vm.provider :libvirt do |v|
       v.memory = 768
@@ -623,6 +627,7 @@ end
     device.vm.hostname = "rack-2-leaf-1" 
     
     device.vm.box = "CumulusCommunity/cumulus-vx"
+    device.vm.box_version = "4.4"
 
     device.vm.provider :libvirt do |v|
       v.memory = 768
@@ -743,6 +748,7 @@ end
     device.vm.hostname = "rack-2-leaf-2" 
     
     device.vm.box = "CumulusCommunity/cumulus-vx"
+    device.vm.box_version = "4.4"
 
     device.vm.provider :libvirt do |v|
       v.memory = 768
