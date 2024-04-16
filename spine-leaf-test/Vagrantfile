@@ -868,7 +868,7 @@ end
     
     device.vm.hostname = "rack-1-host-1" 
     
-    device.vm.box = "centos/8"
+    device.vm.box = "generic/ubuntu2204"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
@@ -950,7 +950,7 @@ end
     
     device.vm.hostname = "rack-1-host-2" 
     
-    device.vm.box = "centos/8"
+    device.vm.box = "generic/ubuntu2204"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
@@ -1031,7 +1031,7 @@ end
     
     device.vm.hostname = "rack-2-host-1" 
     
-    device.vm.box = "centos/8"
+    device.vm.box = "generic/ubuntu2204"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
@@ -1112,7 +1112,7 @@ end
     
     device.vm.hostname = "rack-2-host-2" 
     
-    device.vm.box = "centos/8"
+    device.vm.box = "generic/ubuntu2204"
 
     device.vm.provider :libvirt do |v|
       v.nic_model_type = 'e1000' 
@@ -1125,6 +1125,12 @@ end
     device.vm.synced_folder ".", "/vagrant", disabled: true
     device.vm.synced_folder "../utils", "/vagrant/utils", type: 'rsync'
 
+
+    # Configure the DNS servers
+    config.vm.provision "shell", inline: <<-SHELL
+      echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+      echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+    SHELL
 
     # NETWORK INTERFACES
       # link for eth1 --> rack-2-leaf-1:swp2
