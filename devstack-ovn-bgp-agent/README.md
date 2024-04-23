@@ -81,6 +81,8 @@ enable_service q-qos
 enable_service neutron-segments
 enable_service q-log
 
+enable_plugin networking-bgpvpn https://git.openstack.org/openstack/networking-bgpvpn.git
+
 # Horizon (the web UI) is enabled by default. You may want to disable
 # it here to speed up DevStack a bit.
 enable_service horizon
