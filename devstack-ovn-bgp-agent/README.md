@@ -23,6 +23,8 @@ ssh vagrant@192.168.57.101
 
 ### Install devstack with ovn-bgp agent enabled
 
+Execute the following commands to prepare the Virtual Machine for DevStack installation.
+
 ```sh
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0
 sudo apt-get install -y git vim tmux
@@ -38,7 +40,7 @@ git clone https://opendev.org/openstack/devstack
 cd devstack
 ```
 
-### Update the local.conf file with the following configuration:
+### Create ./local.conf file with the following configuration:
 
 ```ini
 [[local|localrc]]
@@ -80,6 +82,8 @@ enable_service q-port-forwarding
 enable_service q-qos
 enable_service neutron-segments
 enable_service q-log
+
+enable_plugin networking-bgpvpn https://git.openstack.org/openstack/networking-bgpvpn.git
 
 # Horizon (the web UI) is enabled by default. You may want to disable
 # it here to speed up DevStack a bit.
@@ -140,7 +144,7 @@ Open /etc/ovn-bgp-agent/bgp-agent.conf and change the driver to ovn_evpn_driver
 driver = ovn_evpn_driver
 ```
 
-### Restart the devstack service
+Restart the devstack service
 
 ```sh
 sudo systemctl restart devstack@ovn-bgp-agent.service
@@ -159,12 +163,12 @@ exit
 ### Forward port 80 from vagrant vm to port 8080 to your local machine
 
 ```sh
-ssh vagrant@192.168.57.101 -L 8085:192.168.57.101:80 -L 8086:192.168.57.101:443
+ssh vagrant@192.168.57.101 -L 8080:192.168.57.101:80
 ```
 
 ### Access the OpenStack dashboard
 
 
-Open the brower and access the following URL: http://localhost:8085/dashboard
+Open the brower and access the following URL: http://localhost:8080/dashboard
 
 > **Note:** The default username is `admin`, password is `password`.
