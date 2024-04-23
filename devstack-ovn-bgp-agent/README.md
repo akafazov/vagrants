@@ -23,6 +23,8 @@ ssh vagrant@192.168.57.101
 
 ### Install devstack with ovn-bgp agent enabled
 
+Execute the following commands to prepare the Virtual Machine for DevStack installation.
+
 ```sh
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0
 sudo apt-get install -y git vim tmux
@@ -38,7 +40,7 @@ git clone https://opendev.org/openstack/devstack
 cd devstack
 ```
 
-### Update the local.conf file with the following configuration:
+### Create ./local.conf file with the following configuration:
 
 ```ini
 [[local|localrc]]
@@ -142,7 +144,7 @@ Open /etc/ovn-bgp-agent/bgp-agent.conf and change the driver to ovn_evpn_driver
 driver = ovn_evpn_driver
 ```
 
-### Restart the devstack service
+Restart the devstack service
 
 ```sh
 sudo systemctl restart devstack@ovn-bgp-agent.service
