@@ -154,7 +154,7 @@ exit
 
 ## Access the OpenStack dashboard
 
-> **Note:** The next steps should from your local machine.
+> **Note:** The next steps should be executed from your local machine.
 
 ### Forward port 80 from vagrant vm to port 8080 to your local machine
 
