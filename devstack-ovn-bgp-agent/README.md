@@ -169,6 +169,6 @@ ssh vagrant@192.168.57.101 -L 8085:192.168.57.101:80 -L 8086:192.168.57.101:443
 ### Access the OpenStack dashboard
 
 
-Open the brower and access the following URL: http://localhost:8085/dashboard
+Open the brower and access the following URL: http://localhost:8080/dashboard
 
 > **Note:** The default username is `admin`, password is `password`.
