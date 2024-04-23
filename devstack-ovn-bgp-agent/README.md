@@ -16,8 +16,10 @@ vagrant up --provider=virtualbox
 ### Access the ovn-bgp container
 
 ```sh
-ssh vagrant@192.168.57.101 -L 8085:192.168.57.101:80 -L 8086:192.168.57.101:443
+ssh vagrant@192.168.57.101
 ```
+
+> **Note:** The password for the vagrant user is `vagrant`.
 
 ### Install devstack with ovn-bgp agent enabled
 
@@ -144,7 +146,24 @@ driver = ovn_evpn_driver
 sudo systemctl restart devstack@ovn-bgp-agent.service
 ```
 
+### Exit from the vagrant virtual machine
+
+```sh
+exit
+```
+
 ## Access the OpenStack dashboard
+
+> **Note:** The next steps should from your local machine.
+
+### Forward port 80 from vagrant vm to port 8080 to your local machine
+
+```sh
+ssh vagrant@192.168.57.101 -L 8085:192.168.57.101:80 -L 8086:192.168.57.101:443
+```
+
+### Access the OpenStack dashboard
+
 
 Open the brower and access the following URL: http://localhost:8085/dashboard
 
