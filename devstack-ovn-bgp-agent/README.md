@@ -163,7 +163,7 @@ exit
 ### Forward port 80 from vagrant vm to port 8080 to your local machine
 
 ```sh
-ssh vagrant@192.168.57.101 -L 8085:192.168.57.101:80 -L 8086:192.168.57.101:443
+ssh vagrant@192.168.57.101 -L 8080:192.168.57.101:80
 ```
 
 ### Access the OpenStack dashboard
