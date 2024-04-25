@@ -1,25 +1,168 @@
-Vagrant.configure("2") do |config|
-  config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-  end
 
-  config.vm.define "vm1" do |vm1|
-      vm1.vm.box = "generic/ubuntu2204"
-      vm1.vm.provider "virtualbox" do |v|
-        v.memory = 8192
-        v.cpus = 4
+RAM = 8192
+VCPUS = 4
+
+Vagrant.configure("2") do |config|
+  
+    config.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    end
+
+    # Configure dc1gw
+    config.vm.define "dc1gw" do |dc1gw|
+        dc1gw.vm.box = "generic/ubuntu2204"
+        dc1gw.vm.network "private_network", ip: "192.168.56.10"
+        dc1gw.vm.provider "virtualbox" do |v|
+            v.memory = RAM
+            v.cpus = VCPUS
+        end
+        dc1gw.vm.hostname = "dc1gw"
+        dc1gw.vm.provision "shell", inline: <<-SHELL
+        # Disable systemd-resolved and set static DNS
+        sudo systemctl disable systemd-resolved
+        sudo systemctl stop systemd-resolved
+        sudo rm /etc/resolv.conf
+        echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+    
+        # Install FRR
+        sudo apt-get update
+        sudo apt-get install -y frr frr-doc
+        sudo sysctl -w net.ipv4.ip_forward=1
+        echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+        SHELL
+    
+        # dc1gw.vm.synced_folder "./config/dc1gw/etc/frr", "/etc/frr"
+    
+        dc1gw.vm.provision "shell", inline: <<-SHELL
+
+            # add dummy route for testing
+            sudo ip route add 192.168.99.0/24 dev eth0
+
+            sudo tee /etc/frr/frr.conf <<EOF
+!
+frr version 8.1
+frr defaults traditional
+hostname dc1gw
+log syslog informational
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+debug bgp neighbor-events
+debug bgp updates in
+debug bgp updates out
+!
+router bgp 65001
+    bgp router-id 192.168.56.10
+    neighbor 192.168.56.11 remote-as 65002
+    !
+    address-family ipv4 unicast
+        network 192.168.56.0/24
+        network 192.168.99.0/24
+        neighbor 192.168.56.11 soft-reconfiguration inbound
+        neighbor 192.168.56.11 route-map ALLOW_ALL in
+        neighbor 192.168.56.11 route-map ALLOW_ALL out
+    exit-address-family
+exit
+!
+route-map ALLOW_ALL permit 10
+exit
+!
+EOF
+
+            # Enable BGPD and restart FRR
+            sudo sed -i 's/bgpd=no/bgpd=yes/' /etc/frr/daemons
+            sudo systemctl restart frr
+            # Check if FRR is active
+            if ! systemctl is-active --quiet frr; then
+                echo "FRR service did not start properly."
+                exit 1
+            fi
+            SHELL
+
+            dc1gw.vm.provision "file", source: "devstack-bgp.sh", destination: "/home/vagrant/devstack-bgp.sh"
+
+            # dc1gw.vm.provision "shell", inline: <<-SHELL
+            #     bash /home/vagrant/devstack-bgp.sh
+            # SHELL
       end
-      vm1.vm.network "private_network", ip: "192.168.57.101"
-      vm1.vm.provision "shell", privileged: false, reset: true do |s|
+  
+  
+    # Configure dc2gw
+    config.vm.define "dc2gw" do |dc2gw|
+        dc2gw.vm.box = "generic/ubuntu2204"
+        dc2gw.vm.network "private_network", ip: "192.168.56.11"
+        dc2gw.vm.provider "virtualbox" do |v|
+            v.memory = RAM
+            v.cpus = VCPUS
+        end
+        dc2gw.vm.hostname = "dc2gw"
+        dc2gw.vm.provision "shell", inline: <<-SHELL
+        # Disable systemd-resolved and set static DNS
+        sudo systemctl disable systemd-resolved
+        sudo systemctl stop systemd-resolved
+        sudo rm /etc/resolv.conf
+        echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+    
+        # Install FRR
+        sudo apt-get update
+        sudo apt-get install -y frr frr-doc
+        sudo sysctl -w net.ipv4.ip_forward=1
+        echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+        SHELL
+    
+        # dc1gw.vm.synced_folder "./config/dc1gw/etc/frr", "/etc/frr"
+    
+        dc2gw.vm.provision "shell", inline: <<-SHELL
+
+            sudo tee /etc/frr/frr.conf <<EOF
+!
+frr version 8.1
+frr defaults traditional
+hostname dc2gw
+log syslog informational
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+router bgp 65002
+    bgp router-id 192.168.56.11
+    neighbor 192.168.56.10 remote-as 65001
+    !
+    address-family ipv4 unicast
+        network 192.168.56.0/24
+        neighbor 192.168.56.10 soft-reconfiguration inbound
+        neighbor 192.168.56.10 route-map ALLOW_ALL in
+        neighbor 192.168.56.10 route-map ALLOW_ALL out
+    exit-address-family
+exit
+!
+route-map ALLOW_ALL permit 10
+exit
+!
+end
+EOF
+
+            # Enable BGPD and restart FRR
+            sudo sed -i 's/bgpd=no/bgpd=yes/' /etc/frr/daemons
+            sudo systemctl restart frr
+            # Check if FRR is active
+            if ! systemctl is-active --quiet frr; then
+                echo "FRR service did not start properly."
+                exit 1
+            fi
+        SHELL
+
+        dc2gw.vm.provision "shell", inline: <<-SHELL
+            sudo vtysh -c "show ip bgp summary"
+            sudo vtysh -c "show ip bgp neighbors [neighbor IP]"
+            sudo vtysh -c "show ip bgp neighbors [neighbor IP] advertised-routes"
+            sudo vtysh -c "show ip bgp neighbors [neighbor IP] received-routes"
+            sudo vtysh -c "show running-config"
+            sudo vtysh -c "show ip route"
+        SHELL
+
+        dc2gw.vm.provision "file", source: "devstack-bgp.sh", destination: "/home/vagrant/devstack-bgp.sh"
+
     end
   end
-
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo systemctl disable systemd-resolved
-    sudo systemctl stop systemd-resolved
-    sudo rm /etc/resolv.conf
-    echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-  SHELL
-
-end
+  
