@@ -138,7 +138,16 @@ EOF
                 exit 1
             fi
         SHELL
-    
+
+        dc2gw.vm.provision "shell", inline: <<-SHELL
+            sudo vtysh -c "show ip bgp summary"
+            sudo vtysh -c "show ip bgp neighbors [neighbor IP]"
+            sudo vtysh -c "show ip bgp neighbors [neighbor IP] advertised-routes"
+            sudo vtysh -c "show ip bgp neighbors [neighbor IP] received-routes"
+            sudo vtysh -c "show running-config"
+            sudo vtysh -c "show ip route"
+        SHELL
+
     end
   end
   
