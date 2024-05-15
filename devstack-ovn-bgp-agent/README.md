@@ -15,8 +15,10 @@ vagrant up --provider=virtualbox
 
 ### Access the ovn-bgp container
 
+Install devstack on dc1gw and dc2gw nodes
+
 ```sh
-vagrant ssh vm1
+vagrant ssh <dc gw node>
 ```
 
 ### Install devstack
@@ -31,10 +33,10 @@ cd devstack
 
 ### Change the driver to EVPN
 
-Open /etc/ovn-bgp-agent/bgp-agent.conf and change the driver to ovn_evpn_driver
+Change the driver in /etc/ovn-bgp-agent/bgp-agent.conf to ovn_evpn_driver
 
 ```
-driver = ovn_evpn_driver
+sed -i 's/nb_ovn_bgp_driver/ovn_evpn_driver/g' /etc/ovn-bgp-agent/bgp-agent.conf
 ```
 
 Restart the devstack service
@@ -127,3 +129,22 @@ ssh vagrant@192.168.56.10 -L 8080:192.168.56.10:80
 Open a web browser and access the OpenStack dashboard at http://localhost:8080/dashboard.
 
 > **Note:** The default username is `admin`, password is `password`.
+
+## References
+https://ltomasbo.wordpress.com/2021/06/25/openstack-networking-with-evpn/
+https://docs.openstack.org/ovn-bgp-agent/latest/contributor/drivers/evpn_mode_design.html
+https://docs.openstack.org/networking-bgpvpn/latest/user/overview.html
+https://docs.openstack.org/networking-bgpvpn/latest/user/drivers/bagpipe/index.html
+
+## Status
+
+From the documentation below:
+
+```
+Service plugin Driver (e.g., bagpipe driver): This is the component in charge of triggering the needed extra actions (RPCs) to notify the backend driver about the changes needed. In our case it should be a simple driver that just integrates with OVN (OVN NB DB) to ensure the information gets propagated to the corresponding OVN resource in the OVN Southbound database — by adding the information into the external_ids field.
+```
+
+The `Service plugin Driver (e.g., bagpipe driver)` should write the information to the `external_ids` field in the OVN Southbound database, but this is not happening.
+
+If the external_ids vni and as are added manually, the agent creates the related devices on the host.
+```

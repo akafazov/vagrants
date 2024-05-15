@@ -12,6 +12,8 @@ git clone https://opendev.org/openstack/devstack
 
 cd devstack
 
+git checkout "stable/2024.1"
+
 sudo tee ./local.conf <<EOF
 [[local|localrc]]
 
@@ -24,7 +26,7 @@ SERVICE_TOKEN=password
 ADMIN_PASSWORD=password
 
 Q_AGENT=ovn
-Q_ML2_PLUGIN_MECHANISM_DRIVERS=ovn,logger
+Q_ML2_PLUGIN_MECHANISM_DRIVERS=ovn,logger,openvswitch,linuxbridge       
 Q_ML2_PLUGIN_TYPE_DRIVERS=local,flat,vlan,geneve
 Q_ML2_TENANT_NETWORK_TYPE="geneve"
 
@@ -53,8 +55,6 @@ enable_service q-qos
 enable_service neutron-segments
 enable_service q-log
 
-enable_plugin networking-bgpvpn https://git.openstack.org/openstack/networking-bgpvpn.git
-
 # Horizon (the web UI) is enabled by default. You may want to disable
 # it here to speed up DevStack a bit.
 enable_service horizon
@@ -71,6 +71,16 @@ enable_service tls-proxy
 
 # Enable ovn-bgp-agent
 enable_plugin ovn-bgp-agent https://opendev.org/openstack/ovn-bgp-agent
+
+# Enable the BaGPipe driver for BGPVPN
+NETWORKING_BGPVPN_DRIVER="BGPVPN:BaGPipe:networking_bgpvpn.neutron.services.service_drivers.bagpipe.bagpipe_v2.BaGPipeBGPVPNDriver:default"
+
+# Enable the networking-bagpipe plugin
+enable_plugin networking-bagpipe https://opendev.org/openstack/networking-bagpipe.git "stable/2024.1"
+ENABLE_BAGPIPE_L2=True
+
+# Enable the networking-bgpvpn plugin
+enable_plugin networking-bgpvpn https://git.openstack.org/openstack/networking-bgpvpn.git "stable/2024.1"
 
 
 # Whether or not to build custom openvswitch kernel modules from the ovs git
