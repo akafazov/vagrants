@@ -114,6 +114,14 @@ Allow incoming SSH traffic in the security group.
 openstack security group rule create --protocol tcp --dst-port 22 $(openstack security group list -f value -c ID -c Name --project $(openstack project show admin -f value -c id) | grep default | awk '{print $1}' )
 ```
 
+### Create BGPVPN
+
+```sh
+openstack project list
+openstack bgpvpn create --vni <vni> --project <project-id> --name BGPVPN1
+openstack bgpvpn list
+```
+
 ## Access the OpenStack dashboard
 
 ### Forward port 80 from vagrant vm to port 8080 to your local machine
@@ -135,6 +143,7 @@ https://ltomasbo.wordpress.com/2021/06/25/openstack-networking-with-evpn/
 https://docs.openstack.org/ovn-bgp-agent/latest/contributor/drivers/evpn_mode_design.html
 https://docs.openstack.org/networking-bgpvpn/latest/user/overview.html
 https://docs.openstack.org/networking-bgpvpn/latest/user/drivers/bagpipe/index.html
+https://docs.openstack.org/networking-bgpvpn/latest/user/usage.html
 
 ## Status
 
