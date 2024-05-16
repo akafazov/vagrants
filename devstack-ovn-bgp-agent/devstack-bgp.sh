@@ -26,7 +26,7 @@ SERVICE_TOKEN=password
 ADMIN_PASSWORD=password
 
 Q_AGENT=ovn
-Q_ML2_PLUGIN_MECHANISM_DRIVERS=ovn,logger,openvswitch,linuxbridge       
+Q_ML2_PLUGIN_MECHANISM_DRIVERS=ovn,logger
 Q_ML2_PLUGIN_TYPE_DRIVERS=local,flat,vlan,geneve
 Q_ML2_TENANT_NETWORK_TYPE="geneve"
 
@@ -77,7 +77,6 @@ NETWORKING_BGPVPN_DRIVER="BGPVPN:BaGPipe:networking_bgpvpn.neutron.services.serv
 
 # Enable the networking-bagpipe plugin
 enable_plugin networking-bagpipe https://opendev.org/openstack/networking-bagpipe.git "stable/2024.1"
-ENABLE_BAGPIPE_L2=True
 
 # Enable the networking-bgpvpn plugin
 enable_plugin networking-bgpvpn https://git.openstack.org/openstack/networking-bgpvpn.git "stable/2024.1"
