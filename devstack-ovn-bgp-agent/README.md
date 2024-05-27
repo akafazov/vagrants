@@ -138,12 +138,20 @@ Open a web browser and access the OpenStack dashboard at http://localhost:8080/d
 
 > **Note:** The default username is `admin`, password is `password`.
 
+## Write the external_ids information manually
+
+```sh
+openstack port list --router router
+ovn-nbctl set logical_switch_port <port> external_ids:"neutron_bgpvpn\:vni"=1001 external_ids:"neutron_bgpvpn\:as"=65000
+```
+
 ## References
-https://ltomasbo.wordpress.com/2021/06/25/openstack-networking-with-evpn/
-https://docs.openstack.org/ovn-bgp-agent/latest/contributor/drivers/evpn_mode_design.html
-https://docs.openstack.org/networking-bgpvpn/latest/user/overview.html
-https://docs.openstack.org/networking-bgpvpn/latest/user/drivers/bagpipe/index.html
-https://docs.openstack.org/networking-bgpvpn/latest/user/usage.html
+- https://ltomasbo.wordpress.com/2021/06/25/openstack-networking-with-evpn/
+- https://docs.openstack.org/ovn-bgp-agent/latest/contributor/drivers/evpn_mode_design.html
+- https://docs.openstack.org/networking-bgpvpn/latest/user/overview.html
+- https://docs.openstack.org/networking-bgpvpn/latest/user/drivers/bagpipe/index.html
+- https://docs.openstack.org/networking-bgpvpn/latest/user/usage.html
+
 
 ## Status
 
