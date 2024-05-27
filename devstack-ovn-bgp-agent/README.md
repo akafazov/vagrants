@@ -142,7 +142,7 @@ Open a web browser and access the OpenStack dashboard at http://localhost:8080/d
 
 ```sh
 openstack port list --router router
-ovn-nbctl set logical_switch_port <port> external_ids:"neutron_bgpvpn\:vni"=1001 external_ids:"neutron_bgpvpn\:as"=65000
+ovn-nbctl set logical_switch_port <port> external_ids:"neutron_bgpvpn\:vni"=<vni> external_ids:"neutron_bgpvpn\:as"=<as>
 ```
 
 ## References
