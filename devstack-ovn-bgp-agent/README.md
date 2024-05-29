@@ -31,12 +31,19 @@ cd devstack
 
 > **Note:** This step will take around 15-30 minutes to complete.
 
-### Change the driver to EVPN
+### Configure the OVN BGP agent
 
-Change the driver in /etc/ovn-bgp-agent/bgp-agent.conf to ovn_evpn_driver
+Configure the OVN BGP agent.
 
-```
+```sh
+# Change the driver to ovn_evpn_driver
 sed -i 's/nb_ovn_bgp_driver/ovn_evpn_driver/g' /etc/ovn-bgp-agent/bgp-agent.conf
+
+# Change expose_tenant_networks to True
+sed -i 's/expose_tenant_networks = False/expose_tenant_networks = True/g' /etc/ovn-bgp-agent/bgp-agent.conf
+
+# Set the evpn_local_ip to the IP address of the host
+sed -i "s/driver = ovn_evpn_driver/driver = ovn_evpn_driver\nevpn_local_ip =$(hostname -I | awk '{print $2}')/g" /etc/ovn-bgp-agent/bgp-agent.conf
 ```
 
 Restart the devstack service
@@ -141,7 +148,7 @@ Open a web browser and access the OpenStack dashboard at http://localhost:8080/d
 ## Write the external_ids information manually
 
 ```sh
-openstack port list --router router
+openstack port list --router demo-router
 ovn-nbctl set logical_switch_port <port> external_ids:"neutron_bgpvpn\:vni"=<vni> external_ids:"neutron_bgpvpn\:as"=<as>
 ```
 
