@@ -46,8 +46,10 @@ disable_service q-l3
 disable_service q-dhcp
 disable_service q-meta
 
+TARGET_BRANCH="stable/2024.1"
+
 # Enable services, these services depend on neutron plugin.
-enable_plugin neutron https://opendev.org/openstack/neutron
+enable_plugin neutron https://opendev.org/openstack/neutron "stable/2024.1"
 enable_service q-trunk
 enable_service q-dns
 enable_service q-port-forwarding
@@ -70,13 +72,7 @@ ENABLE_TLS=True
 enable_service tls-proxy
 
 # Enable ovn-bgp-agent
-enable_plugin ovn-bgp-agent https://opendev.org/openstack/ovn-bgp-agent
-
-# Enable the BaGPipe driver for BGPVPN
-NETWORKING_BGPVPN_DRIVER="BGPVPN:BaGPipe:networking_bgpvpn.neutron.services.service_drivers.bagpipe.bagpipe_v2.BaGPipeBGPVPNDriver:default"
-
-# Enable the networking-bagpipe plugin
-enable_plugin networking-bagpipe https://opendev.org/openstack/networking-bagpipe.git "stable/2024.1"
+enable_plugin ovn-bgp-agent https://opendev.org/openstack/ovn-bgp-agent "stable/2024.1"
 
 # Enable the networking-bgpvpn plugin
 enable_plugin networking-bgpvpn https://git.openstack.org/openstack/networking-bgpvpn.git "stable/2024.1"
@@ -106,4 +102,3 @@ ENABLE_CHASSIS_AS_GW=True
 [scheduler]
 discover_hosts_in_cells_interval = 2
 EOF
-
